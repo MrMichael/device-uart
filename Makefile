@@ -25,13 +25,16 @@ cmd/device-uart:
 test:
 	$(GOCGO) test ./... -coverprofile=coverage.out
 	$(GOCGO) vet ./...
+	gofmt -l $$(find . -type f -name '*.go'| grep -v "/vendor/")
+	[ "`gofmt -l $$(find . -type f -name '*.go'| grep -v "/vendor/")`" = "" ]
+	./bin/test-attribution-txt.sh
 
 clean:
 	rm -f $(MICROSERVICES)
 
 docker: $(DOCKERS)
 
-docker_device_uart_go:
+docker_device_uart:
 	docker build \
 		--label "git_sha=$(GIT_SHA)" \
 		-t edgexfoundry/device-uart:$(GIT_SHA) \
